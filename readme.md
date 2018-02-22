@@ -171,3 +171,126 @@ svg.append('text').selectAll('tspan')
 	.attr('font-size',30)
 	.text(d => d);
 ```
+
+## Section 4 - Advanced Shapes, with D3 and Path
+
+### Introducing path
+
+* path is a set of data points . it can contain thousands
+* path = 'Mx,y Lx,y Lx,y z' => Mx,y is the starting point. L are lines and z is to close or return to the original point. instead of L we can have Cx,y for curves.
+* more on [W3.org SVG paths](https://www.w3.org/TR/SVG/paths)
+* in d3 we use generators to create paths
+
+### Explaining Generators
+
+* with thouzands of data points its impossible to draw a path manually poin to point
+* d3 offers generators for common shapes : e.g line, path , area
+* we write our test code in interpolate.js file
+* svg line is an element, d3 line is a generator
+* to test the generator we define an array of dataobjects with point coordinates
+
+```
+var dataArray = [{x:5,y:5},{x:10,y:15},{x:20,y:7},{x:30,y:18},{x:40,y:10}];
+```
+
+* we set the svg with d3
+* we define our line generator setting callbacks for the x and y of lines
+
+```
+var line = d3.line()
+				.x((d,i) => d.x*6)
+				.y((d,i) => d.y*4);
+```
+
+* we append a path using the linegenerator
+
+```
+svg.append('path')
+	.attr('stroke','blue')
+	.attr('fill','none')
+	.attr('d',line(dataArray));
+```
+
+* the geenrated svg elemetn is `<path stroke="blue" fill="none" d="M30,20L60,60L120,28L180,72L240,40"></path>`
+
+* if we use a curve in our line gerator `.curve(d3.curveCardinal)` the generated path is `<path stroke="blue" fill="none" d="M30,20C30,20,45,58.666666666666664,60,60C75,61.333333333333336,100,26,120,28C140,30,160,70,180,72C200,74,240,40,240,40"></path>`
+
+### Drawing an area chart
+
+* we will use an area generator. our code in area.js
+
+* again we define a dataArray with a numbers, we define the area generator which has 3 variables. x axis points, y0 (upper line) and y1 (lower line)
+
+```
+var area = d3.area()
+			.x((d,i) => i*20)
+			.y0(height)
+			.y1(d => height-d);
+```
+
+* we append the generator to our svg with d3 and the generated path is '<path d="M0,175L20,174L40,172L60,168L80,163L100,155L120,145L140,130L160,110L180,80L200,65L220,50L240,40L260,32L280,28L300,23L320,20L320,200L300,200L280,200L260,200L240,200L220,200L200,200L180,200L160,200L140,200L120,200L100,200L80,200L60,200L40,200L20,200L0,200Z"></path>'
+
+### Finding other Generators
+
+* there are 20 generators in the API
+
+### Introducing Groups
+
+* you can put anything in a group. 
+* you cannot style them they are not physical . they are conceptual
+* they help organize, move together etc.
+* we append a group in the svg
+* we add a line path and an array of circles to the group
+* we define an array of interpolateTypes
+* we wrap line generation and shape appending to the group ina for loop
+* we add dynamic class name to circles to draw all iterations
+* we have now 6 lines with circles/points on top of each other
+* we use translate to shift groups away from eachother using iteration index as x param
+* we add dynamic curve stale by passing the array val
+* we pass a parametric class name to each group. 
+* class and transform are the most used attributeds in groiups
+* we add some style in CSS using group class
+
+```
+var dataArray = [{x:5,y:5},{x:10,y:15},{x:20,y:7},{x:30,y:18},{x:40,y:10}];
+
+var svg = d3.select('body').append('svg').attr('height','100%').attr('width','100%');
+
+var interpolateTypes = [d3.curveLinear, d3.curveNatural, d3.curveStep, d3.curveBasis, d3.curveBundle, d3.curveCardinal];
+
+// d3 line generator
+for (var p= 0; p < 6; p++){
+	var line = d3.line()
+					.x((d,i) => d.x*6)
+					.y((d,i) => d.y*4)
+					// .curve(d3.curveStep);
+					.curve(interpolateTypes[p]);
+
+	// group
+	var shiftX = p*250;
+	var shiftY = 0;
+	var chartGroup = svg.append('g').attr('class','group'+p).attr('transform','translate('+shiftX+',0)');
+
+	// append line to svg and add to group
+
+	chartGroup.append('path')
+		.attr('stroke','blue')
+		.attr('fill','none')
+		.attr('d',line(dataArray));
+
+	// add dots on line  and add to group
+
+	chartGroup.selectAll('circle.grp'+p)
+		.data(dataArray)
+		.enter().append('circle')
+			.attr('class',(d,i)=> 'grp'+i)
+			.attr('cx',(d,i) => d.x*6)
+			.attr('cy',(d,i) => d.y*4)
+			.attr('r','2');
+```
+
+## Section 5 - Scales and Axes
+
+### Introducing Scales
+
+* 
