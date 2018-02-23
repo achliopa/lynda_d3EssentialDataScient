@@ -293,4 +293,16 @@ for (var p= 0; p < 6; p++){
 
 ### Introducing Scales
 
-* 
+* d3 offers axis generators, manual is also possible but more difficult
+* d3 will draw axis lines, tickmarks and axis labels dynamically
+* axis data can be grouped
+* d3 axes can show dates, strings or numeric data
+* axis use scales. scales use domains as inputs and ranges as outputs
+* domain of data array : data min 0 - data max 10000
+* range of axis : axis min 0px - axis max 300px
+* to compensate for top-left zero in d3 we reverse the map between domain and range in the y axis
+
+### Create a Linear Scale
+
+* we link to area.js
+* we do y axis first
