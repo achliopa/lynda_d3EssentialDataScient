@@ -306,3 +306,80 @@ for (var p= 0; p < 6; p++){
 
 * we link to area.js
 * we do y axis first
+* in the call we define type of scale the domain and range
+
+```
+var y = d3.scaleLinear()
+			.domain([0,180])
+			.range([height, 0]);
+```
+
+### Creating a linear axis
+
+* we will define our linear axis generator. it uses scale to place elements on the map
+* axis has four types. axisLeft, Right, Top, Bottom , it tells where to put labels relative to the line. its not about positioning the line `var yAxis = d3.axisLeft(y);`
+* to place it we define a group and append it to the svg `svg.append('g').attr('class','axis y').call(yAxis);`
+* with call we put in group the yAxis
+* to align chart and axis we apply this technique. we create amargin object and use it to position the elements.
+* the most elegant way is append a group to svg, position it and then add chart and scale to it.
+
+### Positioning and Formatting our Axis
+
+* we see in the generated markup that axisLeft() add to the axis labels the text-anchor: end property. in axisRight it is text-anchor: start
+* our tick lines are red because of the CSS property line { stroke: red }
+* we can resttyle in CSS choosing our selectors from the generated markup tags
+* we can chain tick styling props `var yAxis = d3.axisLeft(y).ticks(3).tickPadding(10).tickSize(10);`
+* requested num of ticks is suggestive. d3 selects the optimal close to our decision
+
+### Creating a Time scale
+
+* we are going to use our dateYears array to drive the x scale
+* we use d3.timeParse() method to parse the years string from the array using ta string interpollation argument.
+* d3.max() can get 2 arguments . aprt from the array the map method as a callback using the parser.
+* d3.extent() returns the range of the array (min, max)
+* we use this in the scale domain `domain([d3.extent(dataYears,d=>parseDate(d))])`
+
+### Creating Time series axis
+
+* we define an xAxis var like the y and append it to the chartGroup as a group.
+* we have a x axis range issue as x in are is static with 20px between points. we need to mak eit data dependent
+* we cannot use x(d) as it refers to dataArray of Yax `.x((d,i) => x(parseDate(dataYears[i])))`
+
+### Creating an ordinal scale and axis
+
+* there are 3 other types of scales, ordinal, quantize, sewuential
+* ordinal scales contain category labels. they display strings passed to them and not calculated values
+* we will add ordinal axis at shapes.js
+* we add an array of strings
+* we set the ordinal scale
+
+```
+var x = d3.scaleOrdinal()
+		.domain(dataDays)
+		.range([25,85,145]);
+
+var xAxis = d3.axisBottom(x);
+```
+
+* in ordinal scale we se the exact position of ticks in range()
+* we append the axis as a group to svg
+* we can  remove the line and leave only labels with display: none in CSS. the selector is g.class line & path
+* instead of scaleOrdinal we can use scalePoints and pass the whole range in range. this distributes ticks including start and end. scaleBand is the best option as it accepts a range and by adding in paddingInner() the percentage of padding in our chart it places the ticks exactly below the bars without manual setting.
+
+### Using Color Scales
+
+* d3 offers preset colorRanges eg. d3.interpolateRainbow. we can add custom ranges
+* we use scaleSequential for our color scale. sequential scale takes an algorithm to calculate range() from domain() so it does not need .range() defined. e.g. `var rainbow = d3.scaleSequential(d3.interpolateRainbow).domain([0,10]);`
+* the domain definition above splits the rainbow range  in 10 and uses the first 10th
+* we use it `.attr('fill',(d,i) => rainbow(i))`. as our d has 3 points we use 3 colors of the 10th of the rainbow
+* istead of preset ranges we can use custom range with arrays of hex value stings to represenbt rgb colors.
+* we can use predef hex vals with `var cat20 = d3.schemeCategory20;` ... '.attr('fill',(d,i) => cat20[i])'
+* d3 v4 offers a plugin called scale chromatic 
+
+### Introducing other scales
+
+* linear, logarithmic, natural log (ln), squareroot, power*2, quantile (%), quantize, threshold
+
+## Chapter 6 - Importing Data into D3
+
+### 
