@@ -382,4 +382,142 @@ var xAxis = d3.axisBottom(x);
 
 ## Chapter 6 - Importing Data into D3
 
-### 
+### introducing external data
+
+* d3 has built-in handlers fro csv, xml, tsv, json, txt, html, dsv, custom files
+* they are grouped a) HTML,txt,custom b) csv,tsv,dsv c) json,xml
+
+### Parsing a CSV file
+
+* we create a csv file and a js file
+* we try the builtin d3 csv parser 
+
+```
+d3.csv('prices.csv').get((error,data) => {
+	console.log(data);
+});
+```
+
+* we get is an array of key value pairs, where the key is the index and the value is the object containing each line's data
+* we can get the date out of the date string with a d3 middleware function
+* we first setup the parser with the used date format interpolator `var parseDate = d3.timeParse('%m/%d/%Y');`
+* the before get we add `.row(d => { return {month: parseDate(d.month), price: Number(d.price.trim().slice(1))};})`
+* this line formats the object to be returned trimming the dollar sign from the price and getting the Date object from the parser method
+
+### Drawing a line chart from CSV data
+
+* we add styles in CSS for path
+* we add our graph generating code in the get callback function where we had the console.log
+* this is an one off async function called when csv parsing is done
+* the first part of our code is time specific with scaleTime and min max def.
+
+```
+var max = d3.max(data, d => d.price);
+		var minDate = d3.min(data, d => d.month);
+		var maxDate = d3.max(data, d => d.month);
+
+		var y = d3.scaleLinear()
+				.domain([0, max])
+				.range([height, 0]);
+
+		var x = d3.scaleTime()
+				.domain([minDate, maxDate])
+				.range([0, width]);
+```
+
+* the rest of the code is same as before. for the graph we use a line generator and we use scaling in our callbacks
+
+### Using TSV and DSV
+
+* TSV same as CSV but *tab* separated not *comma* separated 
+* we create a txt file with | instead of , for parsing
+* in txt parser we cannot use rows as it is not supported because text is not row defined.
+* in the get() callback we set `var rows = psv.parse(data);` where psv is defined before as `var psv = d3.dsvFormat('|');`
+* we console.log the rows but it contains data in string format
+* we do our own custom row parser with map() creating a newRow with properly formated Date
+
+### Parsing JSON
+
+* we create a tree like JSON and parse it with
+
+```
+d3.json('treeData.json').get((error,data) => {
+	//use data
+});
+```
+
+* json supports deep onject nesting
+
+### Parsing and Mapping XML
+
+* we create n XML file for testing
+* we test parsing with d3.xml()
+
+```
+d3.xml('data.xml').get((error,data) => {
+	console.log(data);
+});
+```
+
+* the output is a document not object
+* to make it an object we use vanilla js `var xmlLetter = data.documentElement.getElementsByTagName('letter');`
+* or we use innate d3 functions `var letterNodes = d3.select(data).selectAll('letter');` to parse XML elements much like HTML.
+
+### Parsing a TXT file
+
+* avoid when possible
+* d3 imports txt files as strings. we must distinguish between piped row data txt files 
+
+```
+d3.text('test.txt').get((error,data) => {
+	var myTabPositions = [];
+	var myNewLinePositions = [];
+
+	var tabVal = '\\b\t\\b';
+	var tabMod = 'g';
+	var tabRegExp = new RegExp(tabVal,tabMod);
+	var lineVal = '\\b\n\\b';
+	var lineMod = 'g';
+	var lineRegExp = new RegExp(lineVal,lineMod);
+
+	// custom parsing function
+	data.replace(tabRegExp, (a,b) => { myTabPositions.push(b); return a; });
+	data.replace(lineRegExp, (a,b) => { myNewLinePositions.push(b); return a; });
+
+	console.log(myTabPositions);
+	console.log(myNewLinePositions);
+```
+
+* in the above snippet we set regexp to detect the positions of tabs and newlines to detect data and parse them
+
+### Parsing HTML
+
+* d3.html() returns a document much like XML parser
+* CORS = cross origin resource sharing must be enabled to be able to scrabe data from html markup
+
+### Introducing other data methods
+
+* general syntax
+
+```
+d3.request(url)
+	.row((d)=>{/* format row */})
+	.get(callback)
+```
+
+* using request we can make our own custom parser *https://github/d3/d3-request*
+
+```
+d3.request(url,formatRow, callbacl);
+
+
+function formatRow() {return format(d);}
+
+function callback(error, rows) {
+	if (error) throw error;
+}
+```
+
+## Chapter 7 - Additional Graphics with D3 Layout
+
+*
