@@ -520,4 +520,90 @@ function callback(error, rows) {
 
 ## Chapter 7 - Additional Graphics with D3 Layout
 
-*
+### Introducing Layout
+
+* Layouts are like D3 Generators: input data and output (x,y) coordinates
+* some layouts do more
+* layouts make it easier to make complex graphics
+
+### Making a tree diagram out of JSON
+
+* we add an ew js file to host our diagram
+* we use d3.tree() layout which gets .size function with params not min max but height and width (2D) x,y axis
+* we parse our json to get a nester array to get our root element we identify it with data[0]
+* if we work with hirarchical data in d3 we must provide the root element
+* `ar root = d3.hierarchy(data[0]);` return an Node object with children as objects
+* if our data did not have tree structure but were tabular we then would have to give them tree hierarchy with d3.stratify()
+
+```
+
+	// console.log(data[0]);
+	var root = d3.hierarchy(data[0]);
+	// console.log(root);
+	tree(root);
+	chartGroup.selectAll('circle')
+		.data(root.descendants())
+		.enter().append('circle')
+			.attr('cx',d=>d.x)
+			.attr('cy',d=>d.y)
+			.attr('r','5');
+
+	chartGroup.selectAll('path')
+		.data(root.descendants().slice(1))
+		.enter().append('path')
+			.attr('class','link')
+			// .attr('d',d=>`M${d.x},${d.y}L${d.parent.x},${d.parent.y}`);
+			.attr('d',d=>`M${d.x},${d.y}C${d.x},${(d.parent.y+d.y)/2} ${d.parent.x},${(d.parent.y+d.y)/2} ${d.parent.x},${d.parent.y}`);
+```
+
+* this code runs in jhson callback and makes a tree with circles and curvy paths
+
+### Making a Voronoi Tesselation
+
+* we will put CSS and JS in HTML (index.htm in voronoi folder)
+* d3.range(100) creates an array with  100 numbers in it
+* we use .map to replace the array with an array of random x,y coordinates
+* we create our voronoi layout with voronoi layout generator `var voronoi = d3.voronoi().size([width,height]);`
+* we then put the random coordinates on svg as circles 
+* then we add a path passing to it the voronoi.polygons and set its d path
+
+```
+			var width = 960;
+			var height = 500;
+
+			var vertices = d3.range(100).map(d=>[Math.random()*width, Math.random()*height]);
+			console.log(vertices);
+
+			var voronoi = d3.voronoi().size([width,height]);
+			var svg = d3.select('body').append('svg').attr('width','100%').attr('height','100%');
+			svg.append('g').attr('class','fuel')
+				.selectAll('circle')
+				.data(vertices)
+				.enter().append('circle')
+					.attr('cx',d=>d[0])
+					.attr('cy',d=>d[1])
+					.attr('r','2.5');
+
+			svg.append('g').attr('class','polygons')
+				.selectAll('path')
+				.data(voronoi.polygons(vertices))
+				.enter().append('path')
+					.attr('d',d => 'M'+d.join('L')+'Z');
+```
+
+* we cannot use z-index in svg
+* we set order with the order of d3 .code
+
+
+### Introducing other layouts
+
+* dendrogram(mike bostock tree)
+* radial tree (mike bostock)
+* tree map, rainbow treemap,circle packing, partition
+* arc padding
+* fixed radius near neighbors, draggable blob
+* chord diagram
+* hexagonal binning
+
+## Chapter 8 - Preparing Your Data for Advanced Graphics
+
