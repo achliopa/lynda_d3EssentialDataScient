@@ -691,3 +691,88 @@ function callback(error, rows) {
 * filter goes after append so that we have the d passed fro subselection
 * d3 has array.filter if we want to alter the array
 * elemetns apear in html but have no attributes so do  not show on screen
+
+## Chapter 09 - Interactivity
+
+### Making your graphic responsive
+
+* responsive design is mostly done with CSS
+* it can be done with javascript as well.
+* we will make voronoi diagram responsive
+* in plain js screen width is window.innerWidth
+* this adjusts the design to the screen but needs refresh, she puts a hack in js to handle this
+* we can avoid event handlers with the d3 library call `d3.select(window).on('resize',callFunction;`
+
+### Adding Interactivity with CSS
+
+* we will use voronoi diagram making the polygon yellow when we hover with CSS
+
+### Adding Interactivity with Javascript
+
+* to do the same with css we add in polygon creation chain
+
+```
+						.on('mousemove',function() {this.style.fill = 'red';})
+						.on('mouseout',function() {this.style.fill = 'white';});
+```
+
+* we cannot use arrow func because we need this obj
+* we will add a tooltip on polygon hover. we add as a div to the body with position absolute and opacity 0
+* on mosemove we show it an position it using d3.event.pageX+'px'
+* we add text with html() method passing the d.length
+* we pass d to thge callback to use it and log it. we see it is an array og points. we log d3.event and we see moseover events with coordinates.
+
+### Introducing dispatch
+
+* sometimes we want to fire an event without user doing anything. or we want an event to trigger another event
+* we use d3.dispatch to do it
+* we will test in in voronoi diagramm trigerring the tooltip event even when we are not hovering
+* we select the 31 polygon and fill it with blue `d3.select('g.polygons').select('path:nth-child(30)').style('fill','blue');`
+* we add a tooltip to this polygon with dispatch `d3.select('g.polygons').select('path:nth-child(30)').dispatch('mousemove');`
+* this triggers the mouseover event we have defined to the group put places the tooltip at 0,0 because event has no coordinates wihtout moving the mouse
+* we can fix that by setting the position not relevant to event but to the polygon points
+* a use of dispatch is animating 2 charts with one event
+
+### Transitions
+
+* in d3 and in CSS
+* any attribute set in d3 can be changed slowly with a transition (d3.transition()) ,
+* we will make our polygon go blue slowly int he voronoi diagram
+* we set duration with .duration() in ms and delay with .delay() in ms
+* we can chain multiple transitions with .transition().style().transition().style() one after the other
+* we can move with transform translate in style()
+* we can control the speed with ease or beziel
+
+### Dragging and Zooming
+
+* we will add it to the voronoi diagram
+* we use chartGroup attached to our svg and put all in it
+* we do this because zoom works by adding a transformation to a group on the scale prop
+
+```
+				var chartGroup = svg.append('g');
+
+				chartGroup.call(d3.zoom().on('zoom', ()=> {
+					chartGroup.attr('transform',d3.event.transform);
+				}));
+```
+
+* we add an event handler on the zoom event using d3.zoom method passing the transform attr to the group
+* we can add limits with scaleExtent passign an array with min max `.scaleExtent([0.8,2])`
+* drag doens not work as zoom. we call grag after append. using trasform translate
+
+```
+				function dragged() {
+					d3.select(this).attr('transform',`translate(${d3.event.x},${d3.event.y})`)
+				}
+
+				var chartGroup = svg.append('g').call(d3.drag().on('drag',dragged));
+```
+
+* brush and zoom is used in time slider (one dimension brushing) in scatterplot (2 d brushing)
+
+## Chapter 10 - Picking the Right GRaphic
+
+### Time Series
+
+*
