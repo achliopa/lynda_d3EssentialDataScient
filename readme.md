@@ -607,3 +607,87 @@ function callback(error, rows) {
 
 ## Chapter 8 - Preparing Your Data for Advanced Graphics
 
+### Data manipulation
+
+* prepare your data , 
+* we have used ready data for parsing
+* we might need to filter,group, nest the data
+
+### Prepare stack data using map
+
+* we add stack.js for our code
+* we create a data2.xml file for parsing with years id and 3 values top,middle,bottom
+* we parse xml with d3
+* we set boilerplate code for positioning and margin
+* we use map to fill data array (xml) with extracted dtat from xml rows
+* we create a timescale and linear scale for axis
+* we set 3 categories
+* we use stack generator to do a stacked chart using the categories for naming
+* we use an area path generator
+* we add svg to body and a chartgroup (boilerplate)
+* we instantiate the stack generator passing the xml array
+* we console log. we see that the 3 gategories that mach the mapped arrady object keys create 3 arrays with the points for the chart
+
+### Drawing a stack area chart
+
+* in d3 v4 we can declare both axis in one line
+* we append axis to the group
+* to add our path to the group we cannot just append it because we have multiple (3) in stack. so we preselect selectAll and use enter to append in subselection
+
+```
+	// chartGroup.selectAll('path.area')
+	// 	.data(stacked)
+	// 	.enter().append('path')
+	// 		.attr('class','area')
+	// 		.attr('d',d=>area(d));
+
+	chartGroup.selectAll('g.area')
+		.data(stacked)
+		.enter().append('g')
+			.attr('class','area')
+		.append('path')
+			.attr('class','area')
+			.attr('d',d=>area(d));
+```
+
+* we can access data d for path despite the multiple group definition
+
+### Advancing Selections
+
+* we add select.js prefilling it with a 4by 2 array with some numbers prefilled in nested arrays
+* we add some styling for rects , circles and text and we add some dimensioning
+* we will create a stacked barchart filled with numbers in circles representiung the array
+* we start as always with  dimensioning
+* we create svg and chartgroup
+* we need to create 4 groups for each column and shift each group to the horizontal position. these are the firstgroup as data has size of 4
+* we need to add secondgroup to each firstgroup depending on the subarray size addign group to the group
+* always console.log(d) to see the data parsed
+* data(d=>d) is going one level deep into data hierarchy
+* node is used as a 3rd accesor in callbacks to give us the node list of the parent element
+
+### Make flat data multidimensional
+
+* d3 has a number of function for manipulating data 
+* nest method turns flat tablar data into hierarchical data
+* in csv parser in dataHandlers.js we have one object per row. each object contains a month data and price
+* we and d3.nest() which contains a key() and entries() method. entries() contains the data we want to nest. key says how we want to group data
+
+```
+		var nestedData = d3.nest()
+							.key(d=>d.month.getMonth())
+							.entries(data);
+```
+
+* our example groups the data by month and makes the array from 36 entries to 12 each entry contains 3 rows one per year for the given month
+* getMonth() assigns a 0 based month index
+* nested treemap uses this technique
+
+### Filtering Data
+
+* sometimes we dont have to show a point for every element in the dataset
+* we use d3.filter to filter data points that print circles
+* we use select.js and add d3.filter to show only circles greater than 10
+* our filter get a callback with the condition
+* filter goes after append so that we have the d passed fro subselection
+* d3 has array.filter if we want to alter the array
+* elemetns apear in html but have no attributes so do  not show on screen

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<data>
+	<letter id="A"><frequency>.05382</frequency></letter>
+	<letter id="B"><frequency>.04129</frequency></letter>
+	<letter id="C"><frequency>.02658</frequency></letter>
+	<letter id="D"><frequency>.01104</frequency></letter>
+	<letter id="E"><frequency>.07551</frequency></letter>
+	<letter id="F"><frequency>.05399</frequency></letter>
+	<letter id="G"><frequency>.06894</frequency></letter>
+	<letter id="H"><frequency>.07234</frequency></letter>
+	<letter id="I"><frequency>.04970</frequency></letter>
+	<letter id="J"><frequency>.09877</frequency></letter>
+	<letter id="K"><frequency>.07447</frequency></letter>
+	<letter id="L"><frequency>.02043</frequency></letter>
+	<letter id="M"><frequency>.02458</frequency></letter>
+	<letter id="N"><frequency>.09569</frequency></letter>
+	<letter id="O"><frequency>.07250</frequency></letter>
+	<letter id="P"><frequency>.02613</frequency></letter>
+	<letter id="Q"><frequency>.09911</frequency></letter>
+	<letter id="R"><frequency>.02371</frequency></letter>
+	<letter id="S"><frequency>.06052</frequency></letter>
+	<letter id="T"><frequency>.04614</frequency></letter>
+	<letter id="U"><frequency>.09983</frequency></letter>
+	<letter id="V"><frequency>.05641</frequency></letter>
+	<letter id="W"><frequency>.01214</frequency></letter>
+	<letter id="X"><frequency>.01870</frequency></letter>
+	<letter id="Y"><frequency>.08333</frequency></letter>
+	<letter id="Z"><frequency>.01253</frequency></letter>
+</data>
