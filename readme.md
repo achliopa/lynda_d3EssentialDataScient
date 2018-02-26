@@ -775,4 +775,42 @@ function callback(error, rows) {
 
 ### Time Series
 
-*
+* TimeSeries+Numeric: Continuous - Volume: area , Continuous-Level: line, Period Comparison: rebased line
+*  TimeSeries+Numeric: descrete0Volume: bar, discrete k- level: dot/candlestick , cyclical: radar/circular heat
+
+### Τext
+
+* Text frequency: word cloud, coocurence: matrix/heatmap relationships: chord diagram
+
+### Hierarchy
+
+* Hierarchy: partition / sunburst, flow/process: tree / dendro, radialtree , pack, treemap
+
+### Geography
+
+* regional: choropleth, location: spot map, sequence: tube map
+
+### Distribution
+
+* relationship: histogram, simulation: boxplot, flow: scatterplot
+* relationship: relationship, simulation: force-directed, flow: network
+* overlaying data: area over line to show deviation, grid over scatterplot, circles overlapping scatterplot for groups
+
+## Chapter 11 - COnclusions
+
+### Finding Plugins
+
+* extra d3.js lib files adding extra functionality use them `d3_plugin.method()`
+* for maps we need *geojson* or *topojson* plugins
+* find plugins in d3js in github
+
+### API ref
+
+* there are 2 one for v3 and one for v4. use v4
+
+### using D3 with other libraries
+
+* nvd3.js
+* crossfilter like dispatch
+* dc.js is d3 w/ crossfilter in one package
+* r shiny for statistics
